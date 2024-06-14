@@ -1,3 +1,4 @@
+using ContactManager.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ContactManager.Data;
@@ -16,12 +17,17 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddRazorPages();
 
-builder.Services.AddControllers(config =>
+builder.Services.AddAuthorization(options =>
 {
-    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-
-    config.Filters.Add(new AuthorizeFilter(policy));
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
 });
+
+builder.Services.AddScoped<IAuthorizationHandler, ContactIsOwnerAuthorizationHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, ContactManagerAuthorizationHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, ContactAdministratorsAuthorizationHandler>();
+
 
 var app = builder.Build();
 
@@ -31,7 +37,7 @@ using (var scope = app.Services.CreateScope())
     var context = services.GetRequiredService<ApplicationDbContext>();
     context.Database.Migrate();
 
-    var testUserPw = builder.Configuration.GetValue<string>("SeedUserPW");
+    var testUserPw = app.Configuration["SeedUserPW"];
 
     await SeedData.Initialize(services, testUserPw);
 }
