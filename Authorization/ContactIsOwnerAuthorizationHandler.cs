@@ -2,15 +2,14 @@ using ContactManager.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.VisualBasic;
 
 namespace ContactManager.Authorization;
 
 public class ContactIsOwnerAuthorizationHandler: AuthorizationHandler<OperationAuthorizationRequirement, Contact>
 {
-    private UserManager<IdentityResult> _userManager;
+    private UserManager<IdentityUser> _userManager;
     
-    public ContactIsOwnerAuthorizationHandler(UserManager<IdentityResult> userManager)
+    public ContactIsOwnerAuthorizationHandler(UserManager<IdentityUser> userManager)
     {
         _userManager = userManager;
     }
