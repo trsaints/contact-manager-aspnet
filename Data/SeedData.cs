@@ -1,7 +1,7 @@
-﻿using ContactManager.Models;
+﻿using ContactManager.Authorization;
+using ContactManager.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
 
 // dotnet aspnet-codegenerator razorpage -m Contact -dc ApplicationDbContext -udl -outDir Pages\Contacts --referenceScriptLibraries
 
@@ -9,7 +9,7 @@ namespace ContactManager.Data
 {
     public static class SeedData
     {
-        public static async Task Initialize(IServiceProvider serviceProvider, string testUserPw="")
+        public static async Task Initialize(IServiceProvider serviceProvider, string testUserPw)
         {
             using (var context = new ApplicationDbContext(
                 serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
